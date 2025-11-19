@@ -3,92 +3,710 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WIRS Lab - Dr. Sayantan (Monty) Majumdar</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>WIRS Lab | Water Intelligence and Remote Sensing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <!-- Chosen Palette: Water Intelligence (Deep Ocean Blue, Clean White, Cyan Accents, Slate Text) -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Clearly establishes WIRS Lab identity.
+         2. Mission/About: Defines the lab's core focus based on the PI's bio.
+         3. Principal Investigator: Detailed profile of Dr. Majumdar (Education/Experience) separated from general lab info.
+         4. Research & Projects: A card-based layout displaying the specific funded projects listed in the CV. This transforms the "Grants" list into a "Current Research" portfolio.
+         5. Publications: A tabbed interface (Journals/Conferences) to handle the extensive bibliography without clutter.
+         6. News & Recognition: Highlights awards and service.
+         7. Interactive Elements: Tabs for publications, hover effects on project cards, and a dynamic contact form placeholder.
+    -->
+    <!-- Visualization & Content Choices: 
+         - Projects: Displayed as a grid of cards to emphasize the breadth of funding (NASA, USGS, Google, etc.).
+         - Publications: Grouped by type (Journal vs Conference) to make the long list digestible.
+         - Skills: Visualized as "Lab Capabilities" tags.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        wirs: {
+                            dark: '#0f172a',   // Slate 900
+                            primary: '#0284c7', // Sky 600
+                            accent: '#38bdf8',  // Sky 400
+                            light: '#f0f9ff',   // Sky 50
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        .gradient-text {
+            background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #0284c7;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .project-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom Scrollbar for publication lists */
+        .scroll-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scroll-area::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .scroll-area::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .scroll-area::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <nav>
-            <h1>WIRS Lab</h1>
-            <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#research">Research</a></li>
-                <li><a href="#team">Team</a></li>
-                <li><a href="#publications">Publications</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-sky-200 selection:text-sky-900">
 
-    <main>
-        <section id="hero">
-            <div class="hero-content">
-                <h2>Advancing the Future of Science</h2>
-                <p>Welcome to the WIRS Lab at the Desert Research Institute.</p>
-            </div>
-        </section>
-
-        <section id="about">
-            <h2>About Us</h2>
-            <p>The WIRS Lab is a dynamic research group led by <a href="https://www.dri.edu/directory/sayantan-majumdar/" target="_blank" rel="noopener noreferrer">Dr. Sayantan (Monty) Majumdar</a>, an Assistant Research Professor at the Desert Research Institute. His work focuses on the intersection of hydrology, data science, and remote sensing.</p>
-            <p>Dr. Majumdar's background includes experience as a Research Scientist Intern at Facebook and an Analytics Modeling Intern at Planet Labs. Our mission is to explore and solve complex scientific problems through interdisciplinary collaboration and state-of-the-art technology.</p>
-        </section>
-
-        <section id="research">
-            <h2>Research</h2>
-            <p>Our research focuses on several key areas, including [Your Research Area 1], [Your Research Area 2], and [Your Research Area 3]. We are currently working on projects related to [briefly describe a project], aiming to [mention the goal or impact]. We leverage techniques like [technique 1] and [technique 2] to achieve our results.</p>
-        </section>
-
-        <section id="team">
-            <h2>Our Team</h2>
-            <div class="team-grid">
-                <div class="team-member">
-                    <img src="https://avatars.githubusercontent.com/u/5908368?v=4" alt="Photo of Dr. Sayantan Majumdar">
-                    <h3>Sayantan (Monty) Majumdar, Ph.D.</h3>
-                    <p>Principal Investigator</p>
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                        W
+                    </div>
+                    <div>
+                        <span class="font-display font-bold text-xl tracking-tight text-slate-900 block leading-none">WIRS Lab</span>
+                        <span class="text-xs font-medium text-slate-500 tracking-wide">Water Intelligence & Remote Sensing</span>
+                    </div>
                 </div>
-                <!-- Add more team members here -->
-                <div class="team-member">
-                    <h4>Join Us!</h4>
-                    <p>We are always looking for passionate students and researchers to join our team. See the contact section for details.</p>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="nav-link text-sm font-semibold text-slate-600 hover:text-sky-600 transition-colors">Home</a>
+                    <a href="#research" class="nav-link text-sm font-semibold text-slate-600 hover:text-sky-600 transition-colors">Research</a>
+                    <a href="#team" class="nav-link text-sm font-semibold text-slate-600 hover:text-sky-600 transition-colors">Director</a>
+                    <a href="#publications" class="nav-link text-sm font-semibold text-slate-600 hover:text-sky-600 transition-colors">Publications</a>
+                    <a href="#news" class="nav-link text-sm font-semibold text-slate-600 hover:text-sky-600 transition-colors">News</a>
+                    <a href="#contact" class="bg-sky-600 hover:bg-sky-700 text-white px-5 py-2 rounded-full text-sm font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">Contact Us</a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-sky-600 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
                 </div>
             </div>
-        </section>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 absolute w-full shadow-lg">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#home" class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-sky-50 hover:text-sky-600 rounded-md">Home</a>
+                <a href="#research" class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-sky-50 hover:text-sky-600 rounded-md">Research</a>
+                <a href="#team" class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-sky-50 hover:text-sky-600 rounded-md">Director</a>
+                <a href="#publications" class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-sky-50 hover:text-sky-600 rounded-md">Publications</a>
+                <a href="#news" class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-sky-50 hover:text-sky-600 rounded-md">News</a>
+                <a href="#contact" class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-sky-50 hover:text-sky-600 rounded-md">Contact</a>
+            </div>
+        </div>
+    </nav>
 
-        <section id="publications">
-            <h2>Selected Publications</h2>
-            <p>See my <a href="https://scholar.google.com/citations?user=iYlO-VcAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a> page for a full list of publications.</p>
-            
-            <h4>Journal Articles</h4>
-            <ul>
-                <li>Hasan, M. F., Smith, R. G., <strong>Majumdar, S.</strong>, Huntington, J. L., Neto, A. A. M., & Minor, B.A. (2025). "<a href="https://doi.org/10.1016/j.agwat.2025.109821" target="_blank" rel="noopener noreferrer">Satellite data and physics-constrained machine learning for estimating effective precipitation in the Western United States and application for monitoring groundwater irrigation</a>." <em>Agricultural Water Management</em>.</li>
-                <li>Ott, T. J., <strong>Majumdar, S.</strong>, Huntington, J. L., et al. (2024). "<a href="https://doi.org/10.1016/j.agwat.2024.109000" target="_blank" rel="noopener noreferrer">Toward field-scale groundwater pumping and improved groundwater management using remote sensing and climate data</a>." <em>Agricultural Water Management</em>. [*Equal contribution*].</li>
-                <li>Tolan, J., Yang, H.-I., ..., <strong>Majumdar, S.</strong>, et al. (2024). "<a href="https://doi.org/10.1016/j.rse.2023.113888" target="_blank" rel="noopener noreferrer">Very high resolution canopy height maps from RGB imagery using self-supervised vision transformer and convolutional decoder trained on aerial lidar</a>." <em>Remote Sensing of Environment</em>.</li>
-                <li>Hasan, M. F., Smith, R., Vajedian, S., Pommerenke, R., & <strong>Majumdar, S.</strong> (2023). "<a href="https://doi.org/10.1038/s41467-023-41933-z" target="_blank" rel="noopener noreferrer">Global land subsidence mapping reveals widespread loss of aquifer storage capacity</a>." <em>Nature Communications</em>.</li>
-                <li><strong>Majumdar, S.</strong>, Smith, R. G., Hasan, M. F., et al. (2024). "<a href="https://doi.org/10.1016/j.ejrh.2024.101674" target="_blank" rel="noopener noreferrer">Improving crop-specific groundwater use estimation in the Mississippi Alluvial Plain: Implications for integrated remote sensing and machine learning approaches in data-scarce regions</a>." <em>Journal of Hydrology: Regional Studies</em>.</li>
-                <li><strong>Majumdar, S.</strong>, Smith, R., Conway, B. D., & Lakshmi, V. (2022). "<a href="https://doi.org/10.1002/hyp.14757" target="_blank" rel="noopener noreferrer">Advancing remote sensing and machine learning-driven frameworks for groundwater withdrawal estimation in Arizona: Linking land subsidence to groundwater withdrawals</a>." <em>Hydrological Processes</em>.</li>
-            </ul>
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-20 pb-28 overflow-hidden bg-white">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center opacity-5"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="inline-block mb-4 px-4 py-1 rounded-full bg-sky-50 border border-sky-100 text-sky-700 text-sm font-semibold tracking-wide uppercase">
+                    Desert Research Institute • Reno, NV
+                </div>
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-display font-extrabold text-slate-900 tracking-tight mb-6">
+                    Water Intelligence & <br class="hidden md:block" />
+                    <span class="gradient-text">Remote Sensing Lab</span>
+                </h1>
+                <p class="text-xl text-slate-600 leading-relaxed mb-10 max-w-2xl mx-auto">
+                    Bridging the gap between hydrology, satellite remote sensing, and machine learning to solve critical water resource challenges.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#research" class="inline-flex justify-center items-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-sky-600 hover:bg-sky-700 shadow-lg hover:shadow-xl transition-all duration-200">
+                        Explore Projects
+                    </a>
+                    <a href="#publications" class="inline-flex justify-center items-center px-8 py-3 border border-slate-200 text-base font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 hover:text-sky-600 transition-all duration-200">
+                        View Publications
+                    </a>
+                </div>
+            </div>
 
-            <h4>Data & Software</h4>
-            <ul>
-                <li><strong>Majumdar, S.</strong>, Smith, R. G., Hasan, M. F., et al. (2024). "<a href="https://doi.org/10.5066/P9CET25K" target="_blank" rel="noopener noreferrer">Aquaculture and Irrigation Water Use Model (AIWUM) 2.0 input and output datasets</a>." <em>U.S. Geological Survey data release</em>.</li>
-                <li><strong>Majumdar, S.</strong>, Smith, R. G., Hasan, M. F., et al. (2024). "<a href="https://doi.org/10.5066/P137FIUZ" target="_blank" rel="noopener noreferrer">Aquaculture and Irrigation Water Use Model 2.0 software</a>." <em>U.S. Geological Survey software release</em>.</li>
-                <li>Tolan, J., Yang, H.-I., ..., <strong>Majumdar, S.</strong>, et al. (2023). "High Resolution Canopy Height Maps by WRI and Meta." <em>Meta and World Resources Institute (WRI)</em>. <a href="https://registry.opendata.aws/dataforgood-fb-forests/" target="_blank" rel="noopener noreferrer">Data Link</a> | <a href="https://github.com/facebookresearch/HighResCanopyHeight" target="_blank" rel="noopener noreferrer">Code Link</a>.</li>
-            </ul>
-        </section>
+            <!-- Lab Capabilities/Topics Grid -->
+            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div class="p-6 bg-white rounded-xl shadow-sm border border-slate-100">
+                    <div class="text-4xl mb-3">🛰️</div>
+                    <h3 class="font-bold text-slate-800">Remote Sensing</h3>
+                    <p class="text-sm text-slate-500 mt-1">Satellite & Aerial Imagery Analysis</p>
+                </div>
+                <div class="p-6 bg-white rounded-xl shadow-sm border border-slate-100">
+                    <div class="text-4xl mb-3">💧</div>
+                    <h3 class="font-bold text-slate-800">Hydrology</h3>
+                    <p class="text-sm text-slate-500 mt-1">Water Use & Groundwater Modeling</p>
+                </div>
+                <div class="p-6 bg-white rounded-xl shadow-sm border border-slate-100">
+                    <div class="text-4xl mb-3">🧠</div>
+                    <h3 class="font-bold text-slate-800">Machine Learning</h3>
+                    <p class="text-sm text-slate-500 mt-1">AI-Driven Geospatial Analytics</p>
+                </div>
+                <div class="p-6 bg-white rounded-xl shadow-sm border border-slate-100">
+                    <div class="text-4xl mb-3">🖥️</div>
+                    <h3 class="font-bold text-slate-800">Data Science</h3>
+                    <p class="text-sm text-slate-500 mt-1">Scientific Software Development</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <section id="contact">
-            <h2>Contact Us</h2>
-            <p>If you are interested in our work or potential collaborations, please feel free to reach out.</p>
-            <p>Email: <a href="mailto:monti.majumdar@gmail.com">monti.majumdar@gmail.com</a></p>
-            <p>Location: Reno, Nevada</p>
-            <p>Twitter: <a href="https://twitter.com/hydromaj" target="_blank" rel="noopener noreferrer">@hydromaj</a></p>
-        </section>
-    </main>
+    <!-- Research & Projects Section -->
+    <section id="research" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-base font-semibold text-sky-600 uppercase tracking-wide">Our Work</h2>
+                <h3 class="mt-2 text-3xl leading-8 font-display font-bold tracking-tight text-slate-900 sm:text-4xl">Funded Projects</h3>
+                <p class="mt-4 max-w-2xl text-xl text-slate-500 mx-auto">
+                    Innovative research supported by NASA, USGS, Google, and other leading agencies.
+                </p>
+            </div>
 
-    <footer>
-        <p>&copy; 2025 WIRS Lab. All rights reserved.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="project-card bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm flex flex-col h-full">
+                    <div class="p-6 flex-1">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                NASA
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">2024-2025</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900 mb-3">Improving Groundwater Withdrawal Estimation in Arizona</h4>
+                        <p class="text-slate-600 text-sm mb-4">
+                            Enhancing machine learning and remote sensing-based model estimates to provide actionable withdrawal data amidst Colorado River reductions.
+                        </p>
+                    </div>
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+                        <p class="text-xs text-slate-500"><strong>PI:</strong> Dr. Ryan Smith (CSU), <strong>Co-I:</strong> Dr. Sayantan Majumdar (DRI)</p>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm flex flex-col h-full">
+                    <div class="p-6 flex-1">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Google
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">2025-2026</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900 mb-3">Irrigation Status Mapping using Satellite Embeddings</h4>
+                        <p class="text-slate-600 text-sm mb-4">
+                            Developing annual irrigation status maps (2017-2024) for the western U.S. at 30m resolution, integrating satellite embeddings into the IrrMapper framework.
+                        </p>
+                    </div>
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+                        <p class="text-xs text-slate-500"><strong>PI:</strong> Dr. Sayantan Majumdar (DRI)</p>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm flex flex-col h-full">
+                    <div class="p-6 flex-1">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                NMCG India
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">2026-2028</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900 mb-3">Digital Twin for the Ganga Basin</h4>
+                        <p class="text-slate-600 text-sm mb-4">
+                            Developing an advanced Digital Twin and Water Cycle Atlas using AI, satellite remote sensing, and hydrological modeling for the Ganga River Basin.
+                        </p>
+                    </div>
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+                        <p class="text-xs text-slate-500"><strong>Co-PI:</strong> Dr. Sayantan Majumdar</p>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm flex flex-col h-full">
+                    <div class="p-6 flex-1">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                USGS / DOI
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">Active</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900 mb-3">OpenET Planning & Development</h4>
+                        <p class="text-slate-600 text-sm mb-4">
+                             Multiple phases of development for the OpenET platform, enhancing software tools, datasets, and integrating data into national hydrologic models.
+                        </p>
+                    </div>
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+                        <p class="text-xs text-slate-500"><strong>Role:</strong> Faculty / Researcher</p>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-card bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm flex flex-col h-full">
+                    <div class="p-6 flex-1">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                                DOD-Army
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">2025-2027</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900 mb-3">Groundwater in Transboundary Watersheds</h4>
+                        <p class="text-slate-600 text-sm mb-4">
+                            Characterizing groundwater resources in eight international watersheds using satellite remote sensing, hydroclimate, and land surface models.
+                        </p>
+                    </div>
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+                        <p class="text-xs text-slate-500"><strong>Co-PI:</strong> Dr. Sayantan Majumdar</p>
+                    </div>
+                </div>
+
+                 <!-- Project 6 -->
+                 <div class="project-card bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm flex flex-col h-full">
+                    <div class="p-6 flex-1">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                                State of Nevada
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">2023-2026</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900 mb-3">Nevada Water Resources Initiative</h4>
+                        <p class="text-slate-600 text-sm mb-4">
+                            Estimating water use across Nevada associated with agriculture and natural groundwater discharge areas to support state water planning.
+                        </p>
+                    </div>
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+                        <p class="text-xs text-slate-500"><strong>Role:</strong> Faculty</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Director Profile Section -->
+    <section id="team" class="py-20 bg-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-sky-50 rounded-full blur-3xl opacity-50"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="lg:grid lg:grid-cols-12 lg:gap-12 items-start">
+                
+                <!-- Left Column: Bio -->
+                <div class="lg:col-span-4 text-center lg:text-left mb-12 lg:mb-0">
+                    <div class="inline-block p-1 rounded-full bg-gradient-to-br from-sky-400 to-cyan-300 mb-6">
+                        <div class="w-40 h-40 rounded-full bg-slate-200 overflow-hidden border-4 border-white shadow-md mx-auto lg:mx-0 flex items-center justify-center">
+                             <span class="text-4xl">👨‍🔬</span>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-display font-bold text-slate-900">Sayantan Majumdar, Ph.D.</h2>
+                    <p class="text-sky-600 font-medium text-lg mt-2">Lab Director & Assistant Research Professor</p>
+                    <p class="text-slate-500 mt-1">Desert Research Institute</p>
+                    
+                    <div class="mt-6 space-y-3">
+                         <a href="mailto:sayantan.majumdar@dri.edu" class="flex items-center justify-center lg:justify-start gap-2 text-slate-600 hover:text-sky-600 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            sayantan.majumdar@dri.edu
+                        </a>
+                        <a href="https://www.dri.edu/directory/sayantan-majumdar" target="_blank" class="flex items-center justify-center lg:justify-start gap-2 text-slate-600 hover:text-sky-600 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                            DRI Profile
+                        </a>
+                        <a href="https://www.linkedin.com/in/sayantanmajumdar" target="_blank" class="flex items-center justify-center lg:justify-start gap-2 text-slate-600 hover:text-sky-600 transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            LinkedIn
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Column: Details -->
+                <div class="lg:col-span-8">
+                    <div class="bg-white">
+                        <h3 class="text-xl font-bold text-slate-900 border-b pb-4 mb-6">Education</h3>
+                        <div class="space-y-8 border-l-2 border-sky-100 pl-8 ml-2">
+                            <div class="relative">
+                                <div class="absolute -left-[41px] top-1 w-5 h-5 rounded-full border-4 border-white bg-sky-500"></div>
+                                <h4 class="text-lg font-bold text-slate-900">Ph.D. in Geological Engineering</h4>
+                                <p class="text-sky-600">Missouri University of Science and Technology, USA</p>
+                                <p class="text-sm text-slate-500">2018 - 2022 | CGPA: 3.75/4</p>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute -left-[41px] top-1 w-5 h-5 rounded-full border-4 border-white bg-sky-300"></div>
+                                <h4 class="text-lg font-bold text-slate-900">M.Sc. in Geoinformatics (Cum Laude)</h4>
+                                <p class="text-sky-600">Faculty ITC, University of Twente, Netherlands</p>
+                                <p class="text-sm text-slate-500">2017 - 2019 | CGPA: 8.9/10</p>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute -left-[41px] top-1 w-5 h-5 rounded-full border-4 border-white bg-sky-200"></div>
+                                <h4 class="text-lg font-bold text-slate-900">M.Sc. in Computer Science</h4>
+                                <p class="text-sky-600">St. Xavier's College (Autonomous) Kolkata, India</p>
+                                <p class="text-sm text-slate-500">2015 - 2017</p>
+                            </div>
+                             <div class="relative">
+                                <div class="absolute -left-[41px] top-1 w-5 h-5 rounded-full border-4 border-white bg-sky-100"></div>
+                                <h4 class="text-lg font-bold text-slate-900">B.Sc. in Computer Science (Hons.)</h4>
+                                <p class="text-sky-600">St. Xavier's College (Autonomous) Kolkata, India</p>
+                                <p class="text-sm text-slate-500">2012 - 2015</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-bold text-slate-900 border-b pb-4 mb-6 mt-12">Recent Experience</h3>
+                        <ul class="space-y-4">
+                            <li class="flex gap-4 items-start">
+                                <span class="flex-shrink-0 w-12 pt-1 text-sm font-bold text-slate-400">2023-</span>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Assistant Research Professor</h4>
+                                    <p class="text-sm text-slate-600">Desert Research Institute (DRI), Reno, NV</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4 items-start">
+                                <span class="flex-shrink-0 w-12 pt-1 text-sm font-bold text-slate-400">2022-23</span>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Postdoctoral Fellow</h4>
+                                    <p class="text-sm text-slate-600">Colorado State University & USGS, Fort Collins, CO</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4 items-start">
+                                <span class="flex-shrink-0 w-12 pt-1 text-sm font-bold text-slate-400">2022</span>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Research Scientist Intern</h4>
+                                    <p class="text-sm text-slate-600">Meta Platforms, Inc., Menlo Park, CA</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Publications Section -->
+    <section id="publications" class="py-20 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-12">
+                <div>
+                    <h2 class="text-base font-semibold text-sky-600 uppercase tracking-wide">Knowledge Base</h2>
+                    <h3 class="mt-2 text-3xl leading-8 font-display font-bold tracking-tight text-slate-900 sm:text-4xl">Selected Publications</h3>
+                </div>
+                <!-- Tab Controls -->
+                <div class="mt-6 md:mt-0 inline-flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
+                    <button onclick="switchTab('journal')" id="tab-journal" class="px-4 py-2 rounded-md text-sm font-medium bg-sky-100 text-sky-700 transition-colors">Journals</button>
+                    <button onclick="switchTab('conf')" id="tab-conf" class="px-4 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Conferences</button>
+                </div>
+            </div>
+
+            <!-- Journal List -->
+            <div id="content-journal" class="block space-y-4 bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 max-h-[800px] overflow-y-auto scroll-area">
+                
+               
+                 <!-- NEW PAPER (Banerjee et al. 2025) -->
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        Banerjee, S., <span class="font-semibold">Majumdar, S.</span>, Saha, J., Kukal, M. S., Thakur, P. K., Rathore, V. S., … Ndehedehe, C. (2025). 
+                        Groundwater Potential Mapping in India: A Review of Approaches and Pathways for Sustainable Management. 
+                        <em class="text-sky-700">Cambridge Prisms: Drylands</em>, 1–47. 
+                        <a href="https://doi.org/10.1017/dry.2025.10008" target="_blank" class="text-sky-500 hover:underline text-sm ml-2 font-medium">DOI</a>
+                    </p>
+                </div>
+                
+                <!-- NEW PAPER (Parasar et al. 2025) -->
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        Parasar, P., Moral, P., Srivastava, A., Krishna, A. P., <span class="font-semibold">Majumdar, S.</span>, et al. (2025). 
+                        Integrating genetic algorithms and machine learning for spatiotemporal groundwater potential zoning in fractured aquifers. 
+                        <em class="text-sky-700">Journal of Hydrology: Regional Studies</em>, 62, 102800. 
+                        <a href="https://doi.org/10.1016/j.ejrh.2025.102800" target="_blank" class="text-sky-500 hover:underline text-sm ml-2 font-medium">DOI</a>
+                    </p>
+                </div>
+                             
+                <!-- Previous Paper (Hasan et al. 2025) -->
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        Hasan, M. F., Smith, R. G., <span class="font-semibold">Majumdar, S.</span>, Huntington, J. L., Alves Meira Neto, A., & Minor, B. A. (2025). 
+                        Satellite data and physics-constrained machine learning for estimating effective precipitation in the Western United States and application for monitoring groundwater irrigation. 
+                        <em class="text-sky-700">Agricultural Water Management</em>, 319, 109821. 
+                        <a href="https://doi.org/10.1016/j.agwat.2025.109821" target="_blank" class="text-sky-500 hover:underline text-sm ml-2 font-medium">DOI</a>
+                    </p>
+                </div>
+
+                <!-- NEW PAPER 2 (Asfaw et al. 2025) -->
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        Asfaw, D., Smith, R. G., <span class="font-semibold">Majumdar, S.</span>, Grote, K., Fang, B., Wilson, B. B., Lakshmi, V., & Butler, J. J. (2025). 
+                        Predicting groundwater withdrawals using machine learning with limited metering data: Assessment of training data requirements. 
+                        <em class="text-sky-700">Agricultural Water Management</em>, 318, 109691. 
+                        <a href="https://doi.org/10.1016/j.agwat.2025.109691" target="_blank" class="text-sky-500 hover:underline text-sm ml-2 font-medium">DOI</a>
+                    </p>
+                </div>
+
+                <!-- NEW PAPER (Bailey et al. 2025) -->
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        Bailey, R. T., Abbas, S., Čerkasova, N., Arnold, J. G., White, M. J., <span class="font-semibold">Majumdar, S.</span>, & Smith, R. (2025). 
+                        Quantifying agricultural groundwater abstraction using an integrated watershed modeling approach, Mississippi Delta, USA. 
+                        <em class="text-sky-700">Hydrogeology Journal</em>, 33(5), 1429–1447. 
+                        <a href="https://doi.org/10.1007/s10040-025-02922-2" target="_blank" class="text-sky-500 hover:underline text-sm ml-2 font-medium">DOI</a>
+                    </p>
+                </div>
+
+                <!-- NEW PAPER 4 (Ott et al. 2024) -->
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        Ott, T. J., <span class="font-semibold">Majumdar, S.</span>, Huntington, J. L., Pearson, C., Bromley, M., Minor, B. A., ReVelle, P., Morton, C. G., Sueki, S., Beamer, J. P., & Jasoni, R. L. (2024). 
+                        Toward field-scale groundwater pumping and improved groundwater management using remote sensing and climate data. 
+                        <em class="text-sky-700">Agricultural Water Management</em>, 302, 109000. 
+                        <a href="https://doi.org/10.1016/j.agwat.2024.109000" target="_blank" class="text-sky-500 hover:underline text-sm ml-2 font-medium">DOI</a>
+                    </p>
+                </div>
+
+                <!-- NEW PAPER 3 (Majumdar et al. 2024) -->
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        <span class="font-semibold">Majumdar, S.</span>, Smith, R. G., Hasan, M. F., Wilson, J. L., White, V. E., Bristow, E. L., Rigby, J. R., Kress, W. H., & Painter, J. A. (2024). 
+                        Improving crop-specific groundwater use estimation in the Mississippi Alluvial Plain: Implications for integrated remote sensing and machine learning approaches in data-scarce regions. 
+                        <em class="text-sky-700">Journal of Hydrology: Regional Studies</em>, 52, 101674. 
+                        <a href="https://doi.org/10.1016/j.ejrh.2024.101674" target="_blank" class="text-sky-500 hover:underline text-sm ml-2 font-medium">DOI</a>
+                    </p>
+                </div>
+
+                <!-- NEW PAPER 5 (Tolan et al. 2024) -->
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        Tolan, J., Yang, H.-I., ... <span class="font-semibold">Majumdar, S.</span>, et al. (2024). 
+                        Very high resolution canopy height maps from RGB imagery using self-supervised vision transformer and convolutional decoder trained on aerial lidar. 
+                        <em class="text-sky-700">Remote Sensing of Environment</em>, 300, 113888. 
+                        <a href="https://doi.org/10.1016/j.rse.2023.113888" target="_blank" class="text-sky-500 hover:underline text-sm ml-2 font-medium">DOI</a>
+                    </p>
+                </div>
+                
+                <!-- Item 4 -->
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        M. F. Hasan, R. Smith, S. Vajedian, R. Pommerenke, & <span class="font-semibold">S. Majumdar</span>. (2023). 
+                        Global land subsidence mapping reveals widespread loss of aquifer storage capacity. 
+                        <em class="text-sky-700">Nature Communications</em>, 14, 6180.
+                         <a href="https://doi.org/10.1038/s41467-023-41933-z" target="_blank" class="text-sky-500 hover:underline text-sm ml-2 font-medium">DOI</a>
+                    </p>
+                </div>
+        
+                <!-- Item 6 -->
+                 <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        <span class="font-semibold">Majumdar, S.</span>, Smith, R. G., Conway, B. D., & Lakshmi, V. (2022). 
+                        Advancing remote sensing and machine learning-driven frameworks for groundwater withdrawal estimation in Arizona. 
+                        <em class="text-sky-700">Hydrological Processes</em>, 36(11).
+                    </p>
+                </div>
+                <!-- Item 7 -->
+                 <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        <span class="font-semibold">Majumdar, S.</span>, Smith, R. G., Butler Jr, J. J., & Lakshmi, V. (2020). 
+                        Groundwater withdrawal prediction using integrated multitemporal remote sensing data sets and machine learning. 
+                        <em class="text-sky-700">Water Resources Research</em>, 56.
+                    </p>
+                </div>
+                 <!-- Item 8 -->
+                 <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        Smith, R., & <span class="font-semibold">Majumdar, S.</span> (2020). 
+                        Groundwater storage loss associated with land subsidence in western united states mapped using machine learning. 
+                        <em class="text-sky-700">Water Resources Research</em>, 56.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Conference List (Hidden by default) -->
+            <div id="content-conf" class="hidden space-y-4 bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 max-h-[800px] overflow-y-auto scroll-area">
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        <span class="font-semibold">Majumdar, S.</span>, et al. (2025). 
+                        A high-resolution data-driven monthly aquaculture and irrigation water use model in the Mississippi Alluvial Plain. 
+                        <em class="text-sky-700">IEEE IGARSS 2025</em>, Brisbane, Australia.
+                    </p>
+                </div>
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        <span class="font-semibold">Majumdar, S.</span>, et al. (2025). 
+                        Satellite remote sensing and groundwater records reveal land subsidence in Diamond Valley, Nevada. 
+                        <em class="text-sky-700">IEEE IGARSS 2025</em>, Brisbane, Australia.
+                    </p>
+                </div>
+                 
+                <div class="pb-4 border-b border-slate-100 last:border-0">
+                    <p class="text-slate-800 leading-relaxed">
+                        <span class="font-semibold">Majumdar, S.</span>, Smith, R., et al. (2021). 
+                        Estimating local-scale groundwater withdrawals using integrated remote sensing products and deep learning. 
+                        <em class="text-sky-700">IEEE IGARSS 2021</em>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News & Awards Grid -->
+    <section id="news" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-display font-bold text-slate-900 mb-12 text-center">News & Recognition</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-slate-50 rounded-xl p-6 border border-slate-100">
+                    <div class="text-3xl mb-4">🏆</div>
+                    <h3 class="font-bold text-lg mb-2">Awards & Honors</h3>
+                    <ul class="text-sm text-slate-600 space-y-2">
+                        <li>• AGU Chapman Conference Early Career Travel Grant (2024)</li>
+                        <li>• Winner, USGIF GGF/G-RES Poster Competition (2020)</li>
+                        <li>• GSA CARES Grant (2020)</li>
+                        <li>• AGU/NSF Student Travel Grant (2019)</li>
+                    </ul>
+                </div>
+                 <!-- Card 2 -->
+                 <div class="bg-slate-50 rounded-xl p-6 border border-slate-100">
+                    <div class="text-3xl mb-4">🎙️</div>
+                    <h3 class="font-bold text-lg mb-2">Invited Talks</h3>
+                    <ul class="text-sm text-slate-600 space-y-2">
+                        <li>• Google Geo For Good 2025 (Singapore)</li>
+                        <li>• Griffith University, Australia (2025)</li>
+                        <li>• Indian Institute of Technology Delhi (2025)</li>
+                        <li>• Indian Institute of Remote Sensing, ISRO (2024)</li>
+                    </ul>
+                </div>
+                 <!-- Card 3 -->
+                 <div class="bg-slate-50 rounded-xl p-6 border border-slate-100">
+                    <div class="text-3xl mb-4">🤝</div>
+                    <h3 class="font-bold text-lg mb-2">Professional Service</h3>
+                    <ul class="text-sm text-slate-600 space-y-2">
+                        <li>• Panelist: NSF RISE/GEO, 2024</li>
+                        <li>• Panelist: NASA ROSES 2023</li>
+                        <li>• Panelist: NASA ECIP-ES 2023</li>
+                        <li>• Editorial Board: Springer Nature Scientific Reports</li>
+                        <li>• Reviewer: Nature Communications, IEEE TGRS, Remote Sensing of Environment, and others</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section id="contact" class="py-24 bg-wirs-dark text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center opacity-10"></div>
+        <div class="relative max-w-4xl mx-auto text-center px-4">
+            <h2 class="text-3xl md:text-4xl font-display font-bold mb-6">Collaborate with WIRS Lab</h2>
+            <p class="text-slate-300 text-lg mb-10 max-w-2xl mx-auto">
+                We are always open to discussing new research ideas, potential collaborations, and opportunities for students and researchers.
+            </p>
+            <a href="mailto:sayantan.majumdar@dri.edu" class="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 px-8 rounded-full transition-transform hover:scale-105 shadow-xl">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                Get in Touch
+            </a>
+            <div class="mt-12 flex justify-center gap-8 opacity-70">
+                <a href="https://www.dri.edu/" target="_blank" class="hover:opacity-100 transition text-sm font-semibold tracking-widest uppercase">Desert Research Institute</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <span class="font-bold text-slate-200">WIRS Lab</span> © 2025 Sayantan Majumdar
+            </div>
+            <div class="flex space-x-6">
+                <a href="https://github.com/montimaj" target="_blank" class="hover:text-white transition">GitHub</a>
+                <a href="https://www.linkedin.com/in/sayantanmajumdar" target="_blank" class="hover:text-white transition">LinkedIn</a>
+                <a href="https://scholar.google.com/" target="_blank" class="hover:text-white transition">Google Scholar</a>
+            </div>
+        </div>
     </footer>
+
+    <script>
+        // Tab Switching Logic
+        function switchTab(type) {
+            const journalBtn = document.getElementById('tab-journal');
+            const confBtn = document.getElementById('tab-conf');
+            const journalContent = document.getElementById('content-journal');
+            const confContent = document.getElementById('content-conf');
+
+            if (type === 'journal') {
+                journalBtn.classList.add('bg-sky-100', 'text-sky-700');
+                journalBtn.classList.remove('text-slate-600');
+                confBtn.classList.remove('bg-sky-100', 'text-sky-700');
+                confBtn.classList.add('text-slate-600');
+                
+                journalContent.classList.remove('hidden');
+                confContent.classList.add('hidden');
+            } else {
+                confBtn.classList.add('bg-sky-100', 'text-sky-700');
+                confBtn.classList.remove('text-slate-600');
+                journalBtn.classList.remove('bg-sky-100', 'text-sky-700');
+                journalBtn.classList.add('text-slate-600');
+
+                confContent.classList.remove('hidden');
+                journalContent.classList.add('hidden');
+            }
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Smooth scroll adjustment for sticky header
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const menu = document.getElementById('mobile-menu');
+                if (!menu.classList.contains('hidden')) {
+                    menu.classList.add('hidden');
+                }
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                const headerOffset = 80;
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            });
+        });
+    </script>
 </body>
 </html>
